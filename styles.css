@@ -112,3 +112,72 @@ button:active:not(:disabled) {
 #kc-boot-loader .kc-boot-dots span:nth-child(3) { animation-delay: .3s; }
 @keyframes kcPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: .8; } }
 @keyframes kcDot { 0%,100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-6px); opacity: 1; } }
+
+/* ===========================================================
+   Glass-knob flip button — inspired by the frosted-glass toggle
+   reference video: a glowing circular "knob" slides across the
+   button and its icon crossfades the moment the button is tapped,
+   at the same time the label text crossfades to its busy phrase.
+   True 3D glass refraction (like the reference) isn't something
+   CSS can reproduce — this is a flat, honest approximation built
+   from backdrop-blur + radial highlights + a glow that intensifies
+   on tap, applied automatically to every FlipButton on the site.
+   =========================================================== */
+.kc-flip-inner {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; position: relative;
+}
+.kc-flip-knob {
+  position: relative;
+  flex: 0 0 auto;
+  width: 22px; height: 22px; border-radius: 999px;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.85), rgba(255,255,255,.12) 65%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.35) inset, 0 0 10px 2px rgba(46,139,87,.55);
+  display: flex; align-items: center; justify-content: center;
+  transform: translateX(0) scale(1);
+  transition: box-shadow .4s cubic-bezier(.2,.8,.2,1), transform .4s cubic-bezier(.34,1.56,.5,1);
+}
+.kc-flip-knob svg { width: 12px; height: 12px; position: absolute; transition: opacity .25s ease, transform .25s ease; }
+.kc-flip-knob .kc-knob-idle { opacity: 1; transform: scale(1) rotate(0deg); color: #1b2a22; }
+.kc-flip-knob .kc-knob-active { opacity: 0; transform: scale(.4) rotate(-90deg); color: #1b2a22; }
+button.kc-flip-btn-active .kc-flip-knob {
+  transform: translateX(3px) scale(1.12);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.45) inset, 0 0 18px 6px rgba(255,196,0,.65);
+}
+button.kc-flip-btn-active .kc-flip-knob .kc-knob-idle { opacity: 0; transform: scale(.4) rotate(90deg); }
+button.kc-flip-btn-active .kc-flip-knob .kc-knob-active { opacity: 1; transform: scale(1) rotate(0deg); }
+/* Whole button gets a soft glow bloom the instant it flips, echoing
+   the reference video's colour-shift on activation. */
+button.kc-flip-btn-active {
+  box-shadow: 0 0 22px 2px rgba(255,196,0,.35);
+}
+
+/* ===========================================================
+   3D depth for every glass card/section — a richer, multi-layer
+   shadow (close contact shadow + soft ambient falloff + a bright
+   top rim-light) so panels read as raised, physical surfaces
+   instead of flat tinted rectangles, plus a gentle hover tilt on
+   devices with a real pointer (skipped on touch, where a "hover"
+   would otherwise stick after a tap).
+   =========================================================== */
+main, .kc-glass-3d { perspective: 1400px; }
+.kc-glass-3d {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.14) inset,
+    0 -12px 24px rgba(0,0,0,.18) inset,
+    0 14px 30px rgba(0,0,0,.35),
+    0 3px 8px rgba(0,0,0,.25);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .kc-glass-3d:hover {
+    transform: translateY(-5px) rotateX(2.5deg) scale(1.008);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.18) inset,
+      0 -12px 24px rgba(0,0,0,.18) inset,
+      0 26px 44px rgba(0,0,0,.42),
+      0 8px 16px rgba(0,0,0,.3);
+  }
+}

@@ -114,8 +114,8 @@
       "glass": { "enabled": false, "opacity": 20, "blur": 12, "borderOpacity": 20, "borderRadius": 24 }
     },
     "destinations": {
-      "background": { "type": "image", "image": "Waterfall Wide View.jpg", "opacity": 100 },
-      "overlay": { "enabled": true, "color": "#0d1310", "opacity": 55, "gradient": false },
+      "background": { "type": "transparent", "opacity": 100 },
+      "overlay": { "enabled": false, "color": "#000000", "opacity": 30, "gradient": false },
       "glass": { "enabled": false, "opacity": 20, "blur": 12, "borderOpacity": 20, "borderRadius": 24 }
     },
     "experiences": {

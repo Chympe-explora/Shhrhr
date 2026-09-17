@@ -80,7 +80,7 @@
   function GlassCard(props) {
     return h(
       "div",
-      { className: "backdrop-blur-[24px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.1)] " + (props.className || "") },
+      { className: "kc-glass-3d backdrop-blur-[24px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] rounded-[24px] " + (props.className || "") },
       props.children
     );
   }
@@ -578,7 +578,6 @@
 
     var average = ratingsData ? ratingsData.average : 0;
     var count = ratingsData ? ratingsData.count : 0;
-    var breakdown = (ratingsData && ratingsData.breakdown) || {};
     var reviews = (ratingsData && ratingsData.ratings) || [];
 
     return h(
@@ -591,25 +590,12 @@
       ),
 
       h(
-        GlassCard, { className: "p-4 grid md:grid-cols-[auto_1fr] gap-4 items-center" },
+        GlassCard, { className: "p-4 flex justify-center" },
         h(
-          "div", { className: "text-center md:border-r md:border-white/10 md:pr-6" },
+          "div", { className: "text-center" },
           h("div", { className: "text-2xl font-bold" }, average || "\u2013"),
           h(Stars, { value: average, size: 13 }),
           h("div", { className: "text-white/60 text-xs mt-0.5" }, count + (count === 1 ? " rating" : " ratings"))
-        ),
-        h(
-          "div", { className: "space-y-1.5 w-full" },
-          [5, 4, 3, 2, 1].map(function (star) {
-            var n = breakdown[star] || 0;
-            var pct = count ? Math.round((n / count) * 100) : 0;
-            return h(
-              "div", { key: star, className: "flex items-center gap-2 text-xs" },
-              h("span", { className: "w-7 text-white/60" }, star + "\u2605"),
-              h("div", { className: "flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden" }, h("div", { className: "h-full bg-amber-400 rounded-full", style: { width: pct + "%" } })),
-              h("span", { className: "w-6 text-white/40 text-right" }, n)
-            );
-          })
         )
       ),
 
@@ -696,7 +682,7 @@
         ),
         commentsOpen && h(
           "div", { className: "grid md:grid-cols-2 gap-4" },
-          reviews.slice(0, 6).map(function (r) {
+          reviews.map(function (r) {
             return h(
               GlassCard, { key: r.id, className: "p-5" },
               h(
@@ -760,9 +746,17 @@
     }
     return h(
       "button",
-      { onClick: handleClick, className: props.className },
-      h("span", { key: label, className: "kc-swap-text" }, label),
-      props.children
+      { onClick: handleClick, className: "kc-flip-btn" + (active ? " kc-flip-btn-active" : "") + " " + props.className },
+      h(
+        "span", { className: "kc-flip-inner" },
+        h(
+          "span", { className: "kc-flip-knob" },
+          h("svg", { className: "kc-knob-idle", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.5, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M5 12h14" }), h("path", { d: "m12 5 7 7-7 7" })),
+          h("svg", { className: "kc-knob-active", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.5, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M20 6 9 17l-5-5" }))
+        ),
+        h("span", { key: label, className: "kc-swap-text" }, label),
+        props.children
+      )
     );
   }
 
@@ -1004,7 +998,7 @@ function closeNotice() {
       "section", { id: "destinations", className: "scroll-mt-24 relative" },
       h(SectionBG, { section: "destinations" }),
       h(
-        "div", { className: "mb-4 md:mb-6" },
+        GlassCard, { className: "mb-4 md:mb-6 p-5 md:p-6" },
         h("h2", { className: "text-2xl md:text-3xl font-bold tracking-tight" }, DEST.title),
         DEST.subtitle && h("p", { className: "mt-1 text-white/60 text-sm" }, DEST.subtitle)
       ),
